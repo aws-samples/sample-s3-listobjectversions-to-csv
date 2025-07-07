@@ -1,7 +1,8 @@
 # Listing S3 Object Versions to CSV
 
 A robust Python script for exporting a list of S3 object versions, in CSV format, at scale.
-[Image: screenshots/screenshot1.png]
+
+![screenshot](screenshots/screenshot1.png)
 ## Features
 
 * **All Versions**: Export every version of every object key, not just the current version, including [delete markers](https://docs.aws.amazon.com/AmazonS3/latest/userguide/DeleteMarker.html)
