@@ -149,7 +149,7 @@ The script lists the default and maximum of 1000 objects per request. Listing 10
 * [Boto3](https://boto3.amazonaws.com/)- install with `pip install boto3`
 * Minimum permission: `s3:ListBucketVersions`
     * `s3:GetBucketVersioning` is also required, unless using the option `--skipversioningcheck`
-* An S3 general purpose bucket. The script does not work with S3 [directory buckets](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-overview.html) used with the [S3 Express One Zone storage class](https://aws.amazon.com/s3/storage-classes/express-one-zone/), or S3 Tables buckets.
+* An S3 general purpose bucket. The script does not work with S3 [directory buckets](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-overview.html) used with the [S3 Express One Zone storage class](https://aws.amazon.com/s3/storage-classes/express-one-zone/), or S3 Tables bucket.
 
 
 
