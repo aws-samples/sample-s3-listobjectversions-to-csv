@@ -20,7 +20,7 @@ A robust Python script for exporting a list of S3 object versions, in CSV format
 * 3 million object versions → 432 MB CSV in 15 minutes (on a [t2.micro instance](https://aws.amazon.com/ec2/instance-types/t2/))
 * 60 million object versions → 8 GB CSV in 5.5 hours
 
-**Note**: S3 [ListObjectVersions](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectVersions.html)operations must be sequential in order to ensure all objects are included, and this restricts performance. If desired, you could run multiple instances of this script in parallel against different prefixes (creating separate CSVs for each).
+**Note**: S3 [ListObjectVersions](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectVersions.html) operations must be sequential in order to ensure all objects are included, and this restricts performance. If desired, you could run multiple instances of this script in parallel against different prefixes (creating separate CSVs for each).
 
 
 ## Usage
