@@ -88,7 +88,7 @@ awk -F',' '$4=="False" && $5=="False"' s3_object_versions.csv | cut -d',' -f1-3 
 #### Create a manifest of delete markers to delete
 
 ```
-`awk -F',' '$5=="True"' s3_object_versions.csv | cut -d',' -f1-3 > delete_markers.csv`
+awk -F',' '$5=="True"' s3_object_versions.csv | cut -d',' -f1-3 > delete_markers.csv
 ```
 
 #### Create a manifest of older objects to archive
