@@ -41,15 +41,15 @@ python s3_listobjectversions_to_csv.py --bucket my-bucket --prefix logs/2024/
 
 #### Skip bucket versioning check
 
-By default the tool will check whether S3 Versioning is enabled. This requires permission to use the `s3:GetBucketVersioning` API on the bucket. To skip this check, use `--skipversioningcheck`
+By default the script will check whether S3 Versioning is enabled. This requires permission to use the `s3:GetBucketVersioning` API on the bucket. To skip this check, use `--skipversioningcheck`
 
 #### Specify an AWS profile
 
-The tool uses AWS CLI credentials. If you want to specify a particular profile, add `--profile my-profile` 
+The script uses AWS CLI credentials. If you want to specify a particular profile, add `--profile my-profile` 
 
 #### Disable resume
 
-By default, re-running the previous command will cause the tool to resume from the last checkpoint, appending the output file. To disable the checkpointing and resume functionality (overwriting any existing CSV), add `--noresume`
+By default, re-running the previous command will cause the script to resume from the last checkpoint, appending the output file. To disable the checkpointing and resume functionality (overwriting any existing CSV), add `--noresume`
 
 #### For all options and more detail
 
@@ -72,7 +72,7 @@ Doesn’t include a header row in the CSV.
 
 #### **Batch Operations Manifest Compatible** (`--bopsmanifestcompatible`) 
 
-Leaves only the columns that S3 Batch Operations expects. Automatically includes `--nocsvheaders`
+Outputs only the columns that S3 Batch Operations expects. Automatically includes `--nocsvheaders`
 
 ```
 bucket_name,key_name,version_id
@@ -129,7 +129,7 @@ awk -F',' '$4=="True" && $8=="STANDARD"' s3_object_versions.csv | cut -d',' -f1-
 
 #### **Resume process**
 
-* The resume is automatic - just run the same command again and the tool will pick up where it left off.
+* The resume is automatic - just run the same command again and the script will pick up where it left off.
 * Looks for existing checkpoint file with matching checksum
 * Rejects checkpoints older than 24 hours
 * Validates CSV has not been updated externally
