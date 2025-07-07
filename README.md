@@ -25,46 +25,46 @@ A robust Python script for exporting a list of S3 object versions, in CSV format
 
 ## Usage
 
-### Standard output
+#### Standard output
 
 `python3 s3_listobjectversions_to_csv.py --bucket my-bucket `
 
 Outputs a file in the local directory named `s3_object_versions.csv`. Specify output file with `--output /path/filename.csv`
 
-### Specific prefix Only
+#### Specific prefix Only
 
 `python s3_listobjectversions_to_csv.py --bucket my-bucket --prefix logs/2024/ `
 
-### Skip bucket versioning check
+#### Skip bucket versioning check
 
 By default the tool will check whether S3 Versioning is enabled. This requires permission to use the `s3:GetBucketVersioning` API on the bucket. To skip this check, use `--skipversioningcheck`
 
-### Specify an AWS profile
+#### Specify an AWS profile
 
 The tool uses AWS CLI credentials. If you want to specify a particular profile, add `--profile my-profile` 
 
-### Disable resume
+#### Disable resume
 
 By default, re-running the previous command will cause the tool to resume from the last checkpoint, appending the output file. To disable the checkpointing and resume functionality (overwriting any existing CSV), add `--noresume`
 
-### For all options and more detail
+#### For all options and more detail
 
 `python s3_listobjectversions_to_csv.py -help`
 
 
 ## Output Formats
 
-### **Standard** (default)
+#### **Standard** (default)
 
 ```
 bucket_name,key_name,version_id,is_latest,delete_marker,size,last_modified,storage_class
 ```
 
-### **No CSV Headers** (`--nocsvheaders`)
+#### **No CSV Headers** (`--nocsvheaders`)
 
 Doesn’t include a header row in the CSV.
 
-### **Batch Operations Manifest Compatible** (`--bopsmanifestcompatible`) 
+#### **Batch Operations Manifest Compatible** (`--bopsmanifestcompatible`) 
 
 Leaves only the columns that S3 Batch Operations expects. Automatically includes `--nocsvheaders`
 
@@ -72,32 +72,32 @@ Leaves only the columns that S3 Batch Operations expects. Automatically includes
 bucket_name,key_name,version_id
 ```
 
-### **No URL-encoding** (`--urlencoding`)
+#### **No URL-encoding** (`--urlencoding`)
 
 Prevents URL-encoding of object key names, for example replacing <space> with `+` . Note that if you have commas in your object names, this will interfere with subsequent processing of the CSV output. URL-encoding is always enabled when `--bopsmanifestcompatible`  is enabled, as S3 Batch Operations requires URL-encoded keys.
 
 
 ## Example use cases for filtering
 
-### Create a manifest of noncurrent versions to delete
+#### Create a manifest of noncurrent versions to delete
 
 ```
 awk -F',' '$4=="False" && $5=="False"' s3_object_versions.csv | cut -d',' -f1-3 > old_versions.csv
 ```
 
-### Create a manifest of delete markers to delete
+#### Create a manifest of delete markers to delete
 
 ```
 `awk -F',' '$5=="True"' s3_object_versions.csv | cut -d',' -f1-3 > delete_markers.csv`
 ```
 
-### Create a manifest of older objects to archive
+#### Create a manifest of older objects to archive
 
 ```
 awk -F',' 'substr($7,1,4) < "2023"' s3_object_versions.csv | cut -d',' -f1-3 > archive.csv
 ```
 
-### Current versions that are in the STANDARD storage class
+#### Current versions that are in the STANDARD storage class
 
 ```
 awk -F',' '$4=="True" && $8=="STANDARD"' s3_object_versions.csv | cut -d',' -f1-3 > standard_current.csv
@@ -107,21 +107,21 @@ awk -F',' '$4=="True" && $8=="STANDARD"' s3_object_versions.csv | cut -d',' -f1-
 
 ## Explanation of resume functionality
 
-### **Checkpoint creation**
+#### **Checkpoint creation**
 
 * Saves progress every 20 batches (20,000 items)
 * Saves on Ctrl+C cancellation
 * Saves on errors before exit
 * Checkpoint filename includes checksum of job parameters: `outputfile_bucket_checksum.json`
 
-### **What's saved**
+#### **What's saved**
 
 * Current batch number and position markers
 * Total items processed so far
 * List of processed object keys+versions (for deduplication)
 * Timestamp and job parameters
 
-### **Resume process**
+#### **Resume process**
 
 * The resume is automatic - just run the same command again and the tool will pick up where it left off.
 * Looks for existing checkpoint file with matching checksum
