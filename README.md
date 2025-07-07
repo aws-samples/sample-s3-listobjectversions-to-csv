@@ -6,11 +6,11 @@ A robust Python script for exporting a list of S3 object versions, in CSV format
 ## Features
 
 * **All Versions**: Export every version of every object key, not just the current version, including [delete markers](https://docs.aws.amazon.com/AmazonS3/latest/userguide/DeleteMarker.html)
-    * If [S3 Versioning](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html) is disabled, there will only be one version of each key, with a ‘null’ version ID, and no delete markers
+    * If [Amazon S3 Versioning](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html) is disabled, there will only be one version of each key, with a ‘null’ version ID, and no delete markers
 * **Prefix support**: Export only a specific [prefix](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html), without scanning the entire bucket
 * **Authentication token refresh:** Automatically recover on session token expiry
 * **Resume capability:** Automatically resumes from checkpoint (in case of disconnects or other errors)
-* **Output format control:** Choose to remove CSV column headings, or restrict columns to those expected by S3 Batch Operations.
+* **Output format control:** Choose to remove CSV column headings, or restrict columns to those expected by [S3 Batch Operations](https://docs.aws.amazon.com/AmazonS3/latest/userguide/batch-ops.html).
 * **Offline filtering**: Create multiple manifests from one export, without repeated API calls
 * **Memory-efficient:** Streaming output to CSV
 * **Flexible authentication:** Supports all AWS credential methods
@@ -72,7 +72,7 @@ Doesn’t include a header row in the CSV.
 
 #### **Batch Operations Manifest Compatible** (`--bopsmanifestcompatible`) 
 
-Outputs only the columns that S3 Batch Operations expects. Automatically includes `--nocsvheaders`
+Outputs only the columns that [S3 Batch Operations](https://docs.aws.amazon.com/AmazonS3/latest/userguide/batch-ops.html) expects. Automatically includes `--nocsvheaders`
 
 ```
 bucket_name,key_name,version_id
