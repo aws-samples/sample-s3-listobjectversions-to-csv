@@ -72,7 +72,7 @@ Leaves only the columns that S3 Batch Operations expects. Automatically includes
 bucket_name,key_name,version_id
 ```
 
-#### **No URL-encoding** (`--urlencoding`)
+#### **No URL-encoding** (`--nourlencoding`)
 
 Prevents URL-encoding of object key names, for example replacing <space> with `+` . Note that if you have commas in your object names, this will interfere with subsequent processing of the CSV output. URL-encoding is always enabled when `--bopsmanifestcompatible`  is enabled, as S3 Batch Operations requires URL-encoded keys.
 
