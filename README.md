@@ -27,13 +27,17 @@ A robust Python script for exporting a list of S3 object versions, in CSV format
 
 #### Standard output
 
-`python3 s3_listobjectversions_to_csv.py --bucket my-bucket `
+```
+python3 s3_listobjectversions_to_csv.py --bucket my-bucket
+```
 
 Outputs a file in the local directory named `s3_object_versions.csv`. Specify output file with `--output /path/filename.csv`
 
 #### Specific prefix Only
 
-`python s3_listobjectversions_to_csv.py --bucket my-bucket --prefix logs/2024/ `
+```
+python s3_listobjectversions_to_csv.py --bucket my-bucket --prefix logs/2024/
+```
 
 #### Skip bucket versioning check
 
@@ -49,7 +53,9 @@ By default, re-running the previous command will cause the tool to resume from t
 
 #### For all options and more detail
 
-`python s3_listobjectversions_to_csv.py -help`
+```
+python s3_listobjectversions_to_csv.py -help
+```
 
 
 ## Output Formats
