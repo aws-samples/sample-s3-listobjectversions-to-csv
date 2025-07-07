@@ -74,7 +74,7 @@ bucket_name,key_name,version_id
 
 #### **No URL-encoding** (`--nourlencoding`)
 
-Prevents URL-encoding of object key names, for example replacing <space> with `+` . Note that if you have commas in your object names, this will interfere with subsequent processing of the CSV output. URL-encoding is always enabled when `--bopsmanifestcompatible`  is enabled, as S3 Batch Operations requires URL-encoded keys.
+Prevents URL-encoding of object key names, for example replacing ` ` with `+` . Note that if you have commas in your object names, this will interfere with subsequent processing of the CSV output. URL-encoding is always enabled when `--bopsmanifestcompatible`  is enabled, as S3 Batch Operations requires URL-encoded keys.
 
 
 ## Example use cases for filtering
