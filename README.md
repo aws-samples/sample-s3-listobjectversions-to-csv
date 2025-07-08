@@ -21,7 +21,7 @@ A robust Python script for exporting a list of S3 object versions, in CSV format
 * 60 million object versions → 8 GB CSV in 5.5 hours
 
 **Note**: S3 [ListObjectVersions](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectVersions.html) operations must be sequential in order to ensure all objects are included, and this restricts performance. If desired, you could run multiple instances of this script in parallel against different prefixes (creating separate CSVs for each).
-If you are working at 100+ million object scale, or want a regular inventory of your objects, [S3 Inventory](https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-inventory.html) is likely a better choice. If you are workind only with current object versions, S3 Batch Operations has a manifest generator - see **Generating a manifest automatically** in the [S3 Batch Operations documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/batch-ops-create-job.html).
+If you are working at 100+ million object scale, or want a regular inventory of your objects, [S3 Inventory](https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-inventory.html) is likely a better choice. If you are working only with current object versions, S3 Batch Operations has a manifest generator - see **Generating a manifest automatically** in the [S3 Batch Operations documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/batch-ops-create-job.html).
 
 ## Usage
 
