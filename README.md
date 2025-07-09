@@ -146,7 +146,7 @@ awk -F',' '$4=="True" && $8=="STANDARD"' s3_object_versions.csv | cut -d',' -f1-
 
 ## Cost
 
-The script lists the default and maximum of 1000 objects per request. Listing 100 million object versions in the Standard or Intelligent-Tiering [storage classes](https://aws.amazon.com/s3/storage-classes/) (using 100,000 requests) costs $0.50 at time of writing. For details, see https://aws.amazon.com/s3/pricing .
+The script lists the default and maximum of 1000 objects per request. Listing 100 million object versions in the Standard or Intelligent-Tiering [storage classes](https://aws.amazon.com/s3/storage-classes/) (using 100,000 requests) costs $0.50 at time of writing in us-east-1. For details, see https://aws.amazon.com/s3/pricing .
 
 
 ## Requirements
