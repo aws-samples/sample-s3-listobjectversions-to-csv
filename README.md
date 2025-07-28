@@ -85,19 +85,19 @@ Prevents URL-encoding of object key names, for example replacing ` ` with `+` . 
 
 ## Example use cases for filtering
 
-#### Create a manifest of noncurrent versions to delete
+#### Create an S3 Batch Operations compatible manifest of noncurrent versions to delete
 
 ```
 awk -F',' '$4=="False" && $5=="False"' s3_object_versions.csv | cut -d',' -f1-3 > old_versions.csv
 ```
 
-#### Create a manifest of delete markers to delete
+#### Create a S3 Batch Operations manifest of delete markers to delete
 
 ```
 awk -F',' '$5=="True"' s3_object_versions.csv | cut -d',' -f1-3 > delete_markers.csv
 ```
 
-#### Create a manifest of older objects to archive
+#### Create a S3 Batch Operations manifest of older objects to archive
 
 ```
 awk -F',' 'substr($7,1,4) < "2023"' s3_object_versions.csv | cut -d',' -f1-3 > archive.csv
@@ -109,7 +109,56 @@ awk -F',' 'substr($7,1,4) < "2023"' s3_object_versions.csv | cut -d',' -f1-3 > a
 awk -F',' '$4=="True" && $8=="STANDARD"' s3_object_versions.csv | cut -d',' -f1-3 > standard_current.csv
 ```
 
+#### Filter for only current verions, excluding delete markers
+```
+awk -F',' 'NR==1 || ($4=="True" && $5!="True")' s3_object_versions.csv > ./current_versions.csv
+```
 
+#### Filter for only noncurrent verions
+```
+awk -F',' 'NR==1 || $4=="False"' s3_object_versions.csv > ./noncurrent_versions.csv
+```
+
+#### Filter for only objects <128 KiB
+```
+awk -F',' 'NR==1 || ($4=="True" && $5!="True" && $6<131072)' ./big.csv > ./current_versions_small.csv
+```
+
+#### Filter for only objects >=128 KiB
+```
+awk -F',' 'NR==1 || ($4=="True" && $5!="True" && $6>131071)' ./big.csv > ./current_versions_small.csv
+```
+
+#### Analyze total and average object sizes
+
+```
+awk -F',' 'NR>1 && $5!="True" {c++; s+=$6; if($6<131072){sc++; ss+=$6}else{lc++; ls+=$6}} END {if(c==0){print "No objects found"}else{print "Category|Count/Percentage|Average Size|Total Size"; print "---|---|---|---"; printf "Total|%d objects|%.3g %s|%.3g %s\n", c, s/c>=1099511627776?s/c/1099511627776:(s/c>=1073741824?s/c/1073741824:(s/c>=1048576?s/c/1048576:s/c/1024)), s/c>=1099511627776?"TiB":(s/c>=1073741824?"GiB":(s/c>=1048576?"MiB":"KiB")), s>=1099511627776?s/1099511627776:(s>=1073741824?s/1073741824:(s>=1048576?s/1048576:s/1024)), s>=1099511627776?"TiB":(s>=1073741824?"GiB":(s>=1048576?"MiB":"KiB")); sp=s>0?ss*100/s:0; printf "Small objects|%.1f%% < 128KiB|%.3g %s|%.1f%% (%.3g %s)\n", sc*100/c, sc?(ss/sc>=1099511627776?ss/sc/1099511627776:(ss/sc>=1073741824?ss/sc/1073741824:(ss/sc>=1048576?ss/sc/1048576:ss/sc/1024))):0, sc?(ss/sc>=1099511627776?"TiB":(ss/sc>=1073741824?"GiB":(ss/sc>=1048576?"MiB":"KiB"))):"KiB", sp, ss>=1099511627776?ss/1099511627776:(ss>=1073741824?ss/1073741824:(ss>=1048576?ss/1048576:ss/1024)), ss>=1099511627776?"TiB":(ss>=1073741824?"GiB":(ss>=1048576?"MiB":"KiB")); lp=s>0?ls*100/s:0; printf "Larger objects|%.1f%% >= 128KiB|%.3g %s|%.1f%% (%.3g %s)\n", lc*100/c, lc?(ls/lc>=1099511627776?ls/lc/1099511627776:(ls/lc>=1073741824?ls/lc/1073741824:(ls/lc>=1048576?ls/lc/1048576:ls/lc/1024))):0, lc?(ls/lc>=1099511627776?"TiB":(ls/lc>=1073741824?"GiB":(ls/lc>=1048576?"MiB":"KiB"))):"KiB", lp, ls>=1099511627776?ls/1099511627776:(ls>=1073741824?ls/1073741824:(ls>=1048576?ls/1048576:ls/1024)), ls>=1099511627776?"TiB":(ls>=1073741824?"GiB":(ls>=1048576?"MiB":"KiB"))}}' ./big.csv | column -t -s'|'
+```
+
+Example output:
+```
+Category        Count/Percentage  Average Size  Total Size
+---             ---               ---           ---
+Total           58210 objects     71.5 MiB      3.97 TiB
+Small objects   98.6% < 128KiB    0.00977 KiB   0.0% (561 KiB)
+Larger objects  1.4% >= 128KiB    5.08 GiB      100.0% (3.97 TiB)
+```
+
+#### Analyze storage class usage
+```
+awk -F',' 'NR>1 && $5!="True" {c++; s+=$6; sc[$8]++; ss[$8]+=$6} END {if(c==0){print "No objects found"}else{printf "Storage Class|Count/Percentage|Average Size|Total Size\n---|---|---|---\nTotal|%d objects|%.3g %s|%.3g %s\n", c, s/c>=1099511627776?s/c/1099511627776:s/c>=1073741824?s/c/1073741824:s/c>=1048576?s/c/1048576:s/c/1024, s/c>=1099511627776?"TiB":s/c>=1073741824?"GiB":s/c>=1048576?"MiB":"KiB", s>=1099511627776?s/1099511627776:s>=1073741824?s/1073741824:s>=1048576?s/1048576:s/1024, s>=1099511627776?"TiB":s>=1073741824?"GiB":s>=1048576?"MiB":"KiB"; for(cl in sc){name=cl; gsub("REDUCED_REDUNDANCY","Reduced Redundancy",name);  gsub("DEEP_ARCHIVE","Glacier Deep Archive",name); gsub("GLACIER_IR","Glacier Instant Retrieval",name); gsub("GLACIER","Glacier Flexible Retrieval",name); gsub("INTELLIGENT_TIERING","Intelligent-Tiering",name); gsub("ONEZONE_IA","One Zone-IA",name); gsub("STANDARD_IA","Standard-IA",name); gsub("STANDARD","Standard",name); printf "%s|%.1f%% (%d)|%.3g %s|%.3g %s\n", name, sc[cl]*100/c, sc[cl], ss[cl]/sc[cl]>=1099511627776?ss[cl]/sc[cl]/1099511627776:ss[cl]/sc[cl]>=1073741824?ss[cl]/sc[cl]/1073741824:ss[cl]/sc[cl]>=1048576?ss[cl]/sc[cl]/1048576:ss[cl]/sc[cl]/1024, ss[cl]/sc[cl]>=1099511627776?"TiB":ss[cl]/sc[cl]>=1073741824?"GiB":ss[cl]/sc[cl]>=1048576?"MiB":"KiB", ss[cl]>=1099511627776?ss[cl]/1099511627776:ss[cl]>=1073741824?ss[cl]/1073741824:ss[cl]>=1048576?ss[cl]/1048576:ss[cl]/1024, ss[cl]>=1099511627776?"TiB":ss[cl]>=1073741824?"GiB":ss[cl]>=1048576?"MiB":"KiB"}}}' ./s3_object_versions.csv | column -t -s'|'
+```
+Example output:
+```
+Storage Class               Count/Percentage  Average Size  Total Size
+---                         ---               ---           ---
+Total                       58210 objects     71.5 MiB      3.97 TiB
+Standard                    45.5% (26510)     19.6 MiB      508 GiB
+Intelligent-Tiering         1.2% (700)        5.08 GiB      3.47 TiB
+Glacier Deep Archive        27.5% (16000)     0.00977 KiB   156 KiB
+Glacier Flexible Retrieval  25.8% (15000)     0.00977 KiB   146 KiB
+```
+*Tip: This can be run against a filtered output for current or noncurrent object versions.*
 
 ## Explanation of resume functionality
 
