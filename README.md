@@ -63,7 +63,7 @@ python s3_listobjectversions_to_csv.py -help
 #### **Standard** (default)
 
 ```
-bucket_name,key_name,version_id,is_latest,delete_marker,size,last_modified,storage_class
+bucket_name,key_name,version_id,is_latest,delete_marker,size,last_modified,storage_class,e_tag
 ```
 
 #### **No CSV Headers** (`--nocsvheaders`)
