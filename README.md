@@ -121,18 +121,18 @@ awk -F',' 'NR==1 || $4=="False"' s3_object_versions.csv > ./noncurrent_versions.
 
 #### Filter for only objects <128 KiB
 ```
-awk -F',' 'NR==1 || ($4=="True" && $5!="True" && $6<131072)' ./big.csv > ./current_versions_small.csv
+awk -F',' 'NR==1 || $6<131072' ./s3_object_versions.csv > ./small_objects.csv
 ```
 
 #### Filter for only objects >=128 KiB
 ```
-awk -F',' 'NR==1 || ($4=="True" && $5!="True" && $6>131071)' ./big.csv > ./current_versions_small.csv
+awk -F',' 'NR==1 || $6>131071' ./s3_object_versions.csv > ./larger_objects.csv
 ```
 
 #### Analyze total and average object sizes
 
 ```
-awk -F',' 'NR>1 && $5!="True" {c++; s+=$6; if($6<131072){sc++; ss+=$6}else{lc++; ls+=$6}} END {if(c==0){print "No objects found"}else{print "Category|Count/Percentage|Average Size|Total Size"; print "---|---|---|---"; printf "Total|%d objects|%.3g %s|%.3g %s\n", c, s/c>=1099511627776?s/c/1099511627776:(s/c>=1073741824?s/c/1073741824:(s/c>=1048576?s/c/1048576:s/c/1024)), s/c>=1099511627776?"TiB":(s/c>=1073741824?"GiB":(s/c>=1048576?"MiB":"KiB")), s>=1099511627776?s/1099511627776:(s>=1073741824?s/1073741824:(s>=1048576?s/1048576:s/1024)), s>=1099511627776?"TiB":(s>=1073741824?"GiB":(s>=1048576?"MiB":"KiB")); sp=s>0?ss*100/s:0; printf "Small objects|%.1f%% < 128KiB|%.3g %s|%.1f%% (%.3g %s)\n", sc*100/c, sc?(ss/sc>=1099511627776?ss/sc/1099511627776:(ss/sc>=1073741824?ss/sc/1073741824:(ss/sc>=1048576?ss/sc/1048576:ss/sc/1024))):0, sc?(ss/sc>=1099511627776?"TiB":(ss/sc>=1073741824?"GiB":(ss/sc>=1048576?"MiB":"KiB"))):"KiB", sp, ss>=1099511627776?ss/1099511627776:(ss>=1073741824?ss/1073741824:(ss>=1048576?ss/1048576:ss/1024)), ss>=1099511627776?"TiB":(ss>=1073741824?"GiB":(ss>=1048576?"MiB":"KiB")); lp=s>0?ls*100/s:0; printf "Larger objects|%.1f%% >= 128KiB|%.3g %s|%.1f%% (%.3g %s)\n", lc*100/c, lc?(ls/lc>=1099511627776?ls/lc/1099511627776:(ls/lc>=1073741824?ls/lc/1073741824:(ls/lc>=1048576?ls/lc/1048576:ls/lc/1024))):0, lc?(ls/lc>=1099511627776?"TiB":(ls/lc>=1073741824?"GiB":(ls/lc>=1048576?"MiB":"KiB"))):"KiB", lp, ls>=1099511627776?ls/1099511627776:(ls>=1073741824?ls/1073741824:(ls>=1048576?ls/1048576:ls/1024)), ls>=1099511627776?"TiB":(ls>=1073741824?"GiB":(ls>=1048576?"MiB":"KiB"))}}' ./big.csv | column -t -s'|'
+awk -F',' 'NR>1 && $5!="True" {c++; s+=$6; if($6<131072){sc++; ss+=$6}else{lc++; ls+=$6}} END {if(c==0){print "No objects found"}else{print "Category|Count/Percentage|Average Size|Total Size"; print "---|---|---|---"; printf "Total|%d objects|%.3g %s|%.3g %s\n", c, s/c>=1099511627776?s/c/1099511627776:(s/c>=1073741824?s/c/1073741824:(s/c>=1048576?s/c/1048576:s/c/1024)), s/c>=1099511627776?"TiB":(s/c>=1073741824?"GiB":(s/c>=1048576?"MiB":"KiB")), s>=1099511627776?s/1099511627776:(s>=1073741824?s/1073741824:(s>=1048576?s/1048576:s/1024)), s>=1099511627776?"TiB":(s>=1073741824?"GiB":(s>=1048576?"MiB":"KiB")); sp=s>0?ss*100/s:0; printf "Small objects|%.1f%% < 128KiB|%.3g %s|%.1f%% (%.3g %s)\n", sc*100/c, sc?(ss/sc>=1099511627776?ss/sc/1099511627776:(ss/sc>=1073741824?ss/sc/1073741824:(ss/sc>=1048576?ss/sc/1048576:ss/sc/1024))):0, sc?(ss/sc>=1099511627776?"TiB":(ss/sc>=1073741824?"GiB":(ss/sc>=1048576?"MiB":"KiB"))):"KiB", sp, ss>=1099511627776?ss/1099511627776:(ss>=1073741824?ss/1073741824:(ss>=1048576?ss/1048576:ss/1024)), ss>=1099511627776?"TiB":(ss>=1073741824?"GiB":(ss>=1048576?"MiB":"KiB")); lp=s>0?ls*100/s:0; printf "Larger objects|%.1f%% >= 128KiB|%.3g %s|%.1f%% (%.3g %s)\n", lc*100/c, lc?(ls/lc>=1099511627776?ls/lc/1099511627776:(ls/lc>=1073741824?ls/lc/1073741824:(ls/lc>=1048576?ls/lc/1048576:ls/lc/1024))):0, lc?(ls/lc>=1099511627776?"TiB":(ls/lc>=1073741824?"GiB":(ls/lc>=1048576?"MiB":"KiB"))):"KiB", lp, ls>=1099511627776?ls/1099511627776:(ls>=1073741824?ls/1073741824:(ls>=1048576?ls/1048576:ls/1024)), ls>=1099511627776?"TiB":(ls>=1073741824?"GiB":(ls>=1048576?"MiB":"KiB"))}}' ./s3_object_versions.csv | column -t -s'|'
 ```
 *Tip: This can be run against a filtered output for current or noncurrent object versions.*
 
