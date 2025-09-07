@@ -35,7 +35,7 @@ python3 s3_listobjectversions_to_csv.py --bucket my-bucket
 
 Outputs a file in the local directory named `s3_object_versions.csv`. Specify output file with `--output /path/filename.csv`
 
-#### Specific prefix only
+#### Only list key names with a specific prefix
 
 ```
 python s3_listobjectversions_to_csv.py --bucket my-bucket --prefix logs/2024/
