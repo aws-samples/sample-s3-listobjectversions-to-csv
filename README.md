@@ -1,6 +1,6 @@
 # Listing S3 Object Versions to CSV
 
-A robust Python script for exporting a list of S3 object versions, in CSV format, at scale.
+A Python script for exporting a list of S3 object versions, in CSV format. Designed to be robust at scale.
 
 ![screenshot](screenshots/screenshot1.png)
 ## Features
@@ -24,6 +24,8 @@ A robust Python script for exporting a list of S3 object versions, in CSV format
 If you are working at 100+ million object scale, or want a regular inventory of your objects, [S3 Inventory](https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-inventory.html) is likely a better choice. If you are working only with current object versions, S3 Batch Operations has a manifest generator - see **Generating a manifest automatically** in the [S3 Batch Operations documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/batch-ops-create-job.html).
 
 ## Usage
+
+Run in [AWS CloudShell](https://aws.amazon.com/cloudshell/), or on [Amazon EC2](https://aws.amazon.com/ec2/).
 
 #### Standard output
 
