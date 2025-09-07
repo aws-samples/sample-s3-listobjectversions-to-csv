@@ -25,7 +25,7 @@ If you are working at 100+ million object scale, or want a regular inventory of 
 
 ## Usage
 
-Run in [AWS CloudShell](https://aws.amazon.com/cloudshell/), or on [Amazon EC2](https://aws.amazon.com/ec2/).
+Run in [AWS CloudShell](https://aws.amazon.com/cloudshell/), on [Amazon EC2](https://aws.amazon.com/ec2/), or anywhere else with connectivity.
 
 #### Standard output
 
